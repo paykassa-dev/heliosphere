@@ -34,4 +34,6 @@ pub enum Error {
     /// Failed to sign transaction
     #[error("Failed to sign tx: {0}")]
     SignerError(String),
+    #[error("Invalid method: {0}")]
+    InvalidMethod(String),
 }
