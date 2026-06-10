@@ -94,9 +94,15 @@ impl RpcClient {
         P: Serialize,
         R: DeserializeOwned,
     {
+        let safe_method = method.trim_start_matches('/');
+        
         Ok(self
             .client
-            .post(format!("{}/{}", self.rpc_url, method))
+            .post(
+                self.rpc_url
+                    .join(safe_method)
+                    .map_err(|_| crate::Error::InvalidMethod(method.to_owned()))?,
+            )
             .json(payload)
             .send()
             .await?
@@ -109,9 +115,15 @@ impl RpcClient {
     where
         R: DeserializeOwned,
     {
+        let safe_method = method.trim_start_matches('/');
+        
         Ok(self
             .client
-            .get(format!("{}/{}", self.rpc_url, method))
+            .get(
+                self.rpc_url
+                    .join(safe_method)
+                    .map_err(|_| crate::Error::InvalidMethod(method.to_owned()))?,
+            )
             .send()
             .await?
             .json()
